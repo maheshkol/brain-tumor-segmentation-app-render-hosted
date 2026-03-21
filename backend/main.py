@@ -5,6 +5,8 @@ import numpy as np
 import torch
 from pathlib import Path
 import shutil
+import os
+PORT = int(os.environ.get("PORT", 8000))
 
 from .preprocessing import preprocess
 from .inference import load_model, generate_gradcam
