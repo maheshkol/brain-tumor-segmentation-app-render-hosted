@@ -16,32 +16,39 @@ app = FastAPI(title="Brain Tumor Segmentation API")
 
 model = None  # global reference
 
+MODEL_PATH = "backend/models/unet_brats_trained.pth"
+MODEL_URL = "https://huggingface.co/maheshkol/brain-tumor-unet/resolve/main/unet_brats_trained.pth"
 
 @app.on_event("startup")
 def startup_event():
     global model
     #model = load_model("models/unet_brats_trained.pth")
-    MODEL_PATH = "models/unet_brats_trained.pth"
-    MODEL_URL = "https://huggingface.co/maheshkol/brain-tumor-unet/resolve/main/unet_brats_trained.pth"
+    os.makedirs("backend/models", exist_ok=True)
 
-    @app.on_event("startup")
-    def startup_event():
-        global model
+    if not os.path.exists(MODEL_PATH):
+        print("⬇️ Downloading model from HuggingFace...")
 
-        os.makedirs("models", exist_ok=True)
+        response = requests.get(MODEL_URL, stream=True)
 
-        if not os.path.exists(MODEL_PATH):
-            print("⬇️ Downloading model from HuggingFace...")
+        if response.status_code != 200:
+            raise RuntimeError("❌ Failed to download model from HuggingFace")
 
-            response = requests.get(MODEL_URL, stream=True)
-            with open(MODEL_PATH, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
+        with open(MODEL_PATH, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
                     f.write(chunk)
 
-        model = load_model(MODEL_PATH)
-        model.eval()
-        print("✅ Model loaded successfully")
+        print("✅ Model downloaded")
 
+    # 🔥 VERIFY FILE EXISTS
+    if not os.path.exists(MODEL_PATH):
+        raise FileNotFoundError(f"Model still missing at: {MODEL_PATH}")
+
+    print("📦 Loading model...")
+    model = load_model(MODEL_PATH)
+    model.eval()
+
+    print("✅ Model loaded successfully")
 
 @app.post("/predict")
 #async def predict(file: UploadFile = File(...)):
