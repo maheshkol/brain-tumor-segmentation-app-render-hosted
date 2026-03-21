@@ -11,3 +11,4 @@ matplotlib
 scikit-image
 pillow
 python-multipart
+requests
