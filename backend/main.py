@@ -23,6 +23,13 @@ MODEL_PATH = os.path.join(MODEL_DIR, "unet_brats_trained.pth")
 
 MODEL_URL = "https://huggingface.co/maheshkol/brain-tumor-unet/resolve/main/unet_brats_trained.pth"
 
+@app.get("/")
+def home():
+    return {
+        "app": "Brain Tumor Segmentation API",
+        "status": "running",
+        "endpoint": "/predict"
+    }
 
 @app.on_event("startup")
 def startup_event():
