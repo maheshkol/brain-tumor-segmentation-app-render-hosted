@@ -200,7 +200,7 @@ if uploaded_file is not None:
                     BACKEND_URL,
                     files=files,
                     params={"gradcam": show_gradcam},
-                    timeout=300
+                    timeout=600
                 )
             except requests.exceptions.ConnectionError:
                 st.error("❌ Cannot connect to backend. Is FastAPI running?")
