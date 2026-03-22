@@ -1,14 +1,10 @@
 torch
-torchvision
 numpy
 opencv-python
 nibabel
 fastapi
 uvicorn
-streamlit
 requests
-matplotlib
-scikit-image
 pillow
 python-multipart
-requests
+
